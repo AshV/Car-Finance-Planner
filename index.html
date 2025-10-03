@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Loan vs FD Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .container {
+            max-width: 900px;
+        }
+        .bg-gradient {
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            background: white;
+            border: 2px solid #6a11cb;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-3xl shadow-xl overflow-hidden container p-8 md:p-12 space-y-8">
+        <header class="text-center space-y-2">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient">
+                Car Loan vs FD Calculator
+            </h1>
+            <p class="text-gray-600 max-w-lg mx-auto">
+                Compare your options. Enter your car budget and financial details to see which strategy is more beneficial over time.
+            </p>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Input Panel -->
+            <div class="space-y-6">
+                <h2 class="text-2xl font-bold text-gray-800">Your Financial Details</h2>
+
+                <div>
+                    <label for="budget" class="block text-sm font-medium text-gray-700">Car Budget (INR)</label>
+                    <input type="number" id="budget" value="1100000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 bg-gray-50 transition duration-300">
+                </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="fdRate" class="block text-sm font-medium text-gray-700">FD Interest Rate (%)</label>
+                        <input type="number" id="fdRate" value="5" step="0.1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 bg-gray-50 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="loanRate" class="block text-sm font-medium text-gray-700">Loan Interest Rate (%)</label>
+                        <input type="number" id="loanRate" value="9" step="0.1" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 bg-gray-50 transition duration-300">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="fdCompounding" class="block text-sm font-medium text-gray-700">FD Interest Compounding</label>
+                    <select id="fdCompounding" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 bg-gray-50 transition duration-300">
+                        <option value="1">Annually</option>
+                        <option value="2">Half-Yearly</option>
+                        <option value="4">Quarterly</option>
+                        <option value="12">Monthly</option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label for="fdTenure" class="block text-sm font-medium text-gray-700">FD Tenure (Years)</label>
+                        <input type="number" id="fdTenure" value="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 bg-gray-50 transition duration-300">
+                    </div>
+                    <div>
+                        <label for="loanTenure" class="block text-sm font-medium text-gray-700">Loan Tenure (Years)</label>
+                        <input type="number" id="loanTenure" value="5" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 bg-gray-50 transition duration-300">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="loanVsFd" class="block text-sm font-medium text-gray-700">Loan Amount (% of Budget)</label>
+                    <input type="range" id="loanVsFd" min="0" max="100" value="100" class="w-full h-2 bg-blue-100 rounded-lg appearance-none cursor-pointer transition duration-300 mt-2">
+                    <div class="flex justify-between text-sm text-gray-500 mt-2">
+                        <span>0% Loan (100% Cash)</span>
+                        <span>100% Loan (0% Cash)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="bg-gray-50 rounded-2xl p-6 md:p-8 space-y-6 shadow-inner">
+                <h2 class="text-2xl font-bold text-gray-800">Your Comparison Results</h2>
+
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white rounded-xl shadow-md p-4">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-gray-500">Money from FD (Cash)</span>
+                            <span id="fdAmount" class="font-semibold text-lg text-purple-600">₹0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-500">Money from Loan</span>
+                            <span id="loanAmount" class="font-semibold text-lg text-blue-600">₹1,100,000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    <div class="bg-white rounded-xl shadow-md p-4 space-y-2">
+                        <h3 class="font-bold text-lg text-gray-800">Total FD Earnings</h3>
+                        <p class="text-2xl font-bold text-green-600" id="totalFdEarnings">₹0</p>
+                    </div>
+
+                    <div class="bg-white rounded-xl shadow-md p-4 space-y-2">
+                        <h3 class="font-bold text-lg text-gray-800">Total Loan Interest</h3>
+                        <p class="text-2xl font-bold text-red-600" id="totalLoanInterest">₹270,051.44</p>
+                        <p class="text-sm text-gray-500">
+                            Monthly EMI: <span id="emi" class="font-semibold">₹23,334.19</span>
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 rounded-xl text-center shadow-lg transition duration-500" id="resultCard">
+                    <h3 class="text-lg font-bold" id="resultTitle">Taking the loan is more beneficial.</h3>
+                    <p class="text-3xl font-bold mt-2" id="netResult">₹172,755.46 Net Gain</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const budgetInput = document.getElementById('budget');
+            const fdRateInput = document.getElementById('fdRate');
+            const loanRateInput = document.getElementById('loanRate');
+            const fdTenureInput = document.getElementById('fdTenure');
+            const loanTenureInput = document.getElementById('loanTenure');
+            const fdCompoundingInput = document.getElementById('fdCompounding');
+            const loanVsFdSlider = document.getElementById('loanVsFd');
+            
+            const fdAmountSpan = document.getElementById('fdAmount');
+            const loanAmountSpan = document.getElementById('loanAmount');
+            const totalFdEarningsSpan = document.getElementById('totalFdEarnings');
+            const totalLoanInterestSpan = document.getElementById('totalLoanInterest');
+            const emiSpan = document.getElementById('emi');
+            const resultCard = document.getElementById('resultCard');
+            const resultTitle = document.getElementById('resultTitle');
+            const netResultSpan = document.getElementById('netResult');
+
+            function calculatePMT(rate, nper, pv) {
+                if (rate === 0) {
+                    return -pv / nper;
+                }
+                return (pv * rate) / (1 - Math.pow(1 + rate, -nper));
+            }
+
+            function updateCalculations() {
+                const budget = parseFloat(budgetInput.value);
+                const fdRate = parseFloat(fdRateInput.value) / 100;
+                const loanRate = parseFloat(loanRateInput.value) / 100;
+                const fdTenureYears = parseFloat(fdTenureInput.value);
+                const loanTenureYears = parseFloat(loanTenureInput.value);
+                const compoundingFrequency = parseInt(fdCompoundingInput.value);
+                const loanPercentage = parseFloat(loanVsFdSlider.value) / 100;
+
+                if (isNaN(budget) || isNaN(fdRate) || isNaN(loanRate) || isNaN(fdTenureYears) || isNaN(loanTenureYears) || isNaN(compoundingFrequency)) {
+                    return;
+                }
+
+                const loanAmount = budget * loanPercentage;
+                const fdAmount = budget - loanAmount;
+
+                // Update amounts
+                fdAmountSpan.textContent = `₹${(fdAmount).toLocaleString('en-IN')}`;
+                loanAmountSpan.textContent = `₹${(loanAmount).toLocaleString('en-IN')}`;
+
+                // Calculate FD Earnings with compounding
+                const totalFdEarnings = fdAmount * Math.pow((1 + fdRate / compoundingFrequency), fdTenureYears * compoundingFrequency) - fdAmount;
+                totalFdEarningsSpan.textContent = `₹${(totalFdEarnings).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+
+                // Calculate Loan Interest
+                const monthlyLoanRate = loanRate / 12;
+                const tenureMonths = loanTenureYears * 12;
+
+                let emi = 0;
+                let totalLoanInterest = 0;
+
+                if (loanAmount > 0) {
+                    emi = calculatePMT(monthlyLoanRate, tenureMonths, loanAmount);
+                    totalLoanInterest = (emi * tenureMonths) - loanAmount;
+                }
+                
+                emiSpan.textContent = `₹${emi.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+                totalLoanInterestSpan.textContent = `₹${totalLoanInterest.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
+
+                const netResult = totalFdEarnings - totalLoanInterest;
+
+                if (netResult > 0) {
+                    resultCard.classList.remove('bg-red-100');
+                    resultCard.classList.add('bg-green-100');
+                    resultTitle.textContent = "Taking a loan is more beneficial.";
+                    resultTitle.classList.remove('text-red-800');
+                    resultTitle.classList.add('text-green-800');
+                    netResultSpan.textContent = `₹${netResult.toLocaleString('en-IN', { maximumFractionDigits: 2 })} Net Gain`;
+                    netResultSpan.classList.remove('text-red-600');
+                    netResultSpan.classList.add('text-green-600');
+                } else {
+                    resultCard.classList.remove('bg-green-100');
+                    resultCard.classList.add('bg-red-100');
+                    resultTitle.textContent = "Using cash is more beneficial.";
+                    resultTitle.classList.remove('text-green-800');
+                    resultTitle.classList.add('text-red-800');
+                    netResultSpan.textContent = `₹${Math.abs(netResult).toLocaleString('en-IN', { maximumFractionDigits: 2 })} Net Loss`;
+                    netResultSpan.classList.remove('text-green-600');
+                    netResultSpan.classList.add('text-red-600');
+                }
+            }
+
+            // Event Listeners for real-time updates
+            budgetInput.addEventListener('input', updateCalculations);
+            fdRateInput.addEventListener('input', updateCalculations);
+            loanRateInput.addEventListener('input', updateCalculations);
+            fdTenureInput.addEventListener('input', updateCalculations);
+            loanTenureInput.addEventListener('input', updateCalculations);
+            fdCompoundingInput.addEventListener('change', updateCalculations);
+            loanVsFdSlider.addEventListener('input', updateCalculations);
+
+            // Initial calculation on page load
+            updateCalculations();
+        });
+    </script>
+</body>
+</html>
